@@ -13,6 +13,8 @@
 
 uniform vec2 iResolution;
 uniform float iGlobalTime;
+uniform sampler2D texLastFrame;
+uniform float speed;
 
 struct VoronoiResult
 {
@@ -125,7 +127,15 @@ VoronoiResult voronoi( in vec2 pos )
 
 vec3 Ring(vec2 pos)
 {
-	vec3 color = vec3(0.0,1.0,0.0);
+	float aspect = iResolution.y/iResolution.x;
+	pos = (pos-vec2(0.5,0.5*aspect))*2;
+	float radius = fract(iGlobalTime*speed)*2;
+	float dist = length(pos);
+	float intensity = 1-smoothstep(radius,radius+0.01, dist);
+	intensity -= (1-smoothstep(radius-0.11, radius-0.1, dist));
+	vec3 color = vec3(0.0,intensity,0.0);
+	if(speed >= 1.427)
+	color = vec3(0.0,1.0,0.0);
 	return color;
 }
 
@@ -141,8 +151,14 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	vec3 color = gnoise(vec2(30*p+iGlobalTime*2))*vec3(1.0, 0.7, 1.0)+gnoise(vec2(10*p-iGlobalTime*3))*vec3(1.0, 0.7, 1.0)+gnoise(vec2(3*p+iGlobalTime*.5))*vec3(1.0, 0.7, 1.0);
     color = vec3(1)-min(max(color,0),1);
 	color = Ring(p);
-	vec3 col = mix(vec3(0.1)+color, vec3(0.0), smoothstep( 0.00, 0.04, voronoiResult.borderDist ) );
-
+	vec3 col = mix(color, vec3(0.0), smoothstep( 0.00, 0.04, voronoiResult.borderDist ) );
+	
+	//ghosting
+	vec2 uv = fragCoord.xy/iResolution.xy;
+	
+	col += 0.95 * texture2D(texLastFrame, uv).rgb;
+	col -= 1.0 / 256.0; //dim over time to avoid leftovers
+	col = clamp(col, vec3(0), vec3(1));
 	fragColor = vec4(col,1.0);
 }
 
