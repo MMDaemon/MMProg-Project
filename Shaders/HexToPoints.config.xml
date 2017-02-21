@@ -2,15 +2,23 @@
 <DemoData2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Uniforms>
     <Uniform>
-      <UniformName>frequency</UniformName>
+      <UniformName>dist</UniformName>
       <Keyframes>
         <Keyframe>
           <Time>0</Time>
-          <Value>0.8</Value>
+          <Value>0</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>0.5</Time>
+          <Value>0</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>1</Time>
+          <Value>0.45</Value>
         </Keyframe>
         <Keyframe>
           <Time>10</Time>
-          <Value>5</Value>
+          <Value>0.45</Value>
         </Keyframe>
       </Keyframes>
     </Uniform>
@@ -21,7 +29,7 @@
       <ShaderKeyframes>
         <ShaderKeyframe>
           <Time>0</Time>
-          <ShaderPath>.\Ring-Hex.glsl</ShaderPath>
+          <ShaderPath>.\HexToPoints.glsl</ShaderPath>
         </ShaderKeyframe>
       </ShaderKeyframes>
     </Track>
