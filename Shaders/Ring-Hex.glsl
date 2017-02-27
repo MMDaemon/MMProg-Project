@@ -7,15 +7,11 @@ uniform float frequency;
 
 vec3 Rings(vec2 pos)
 {
-	float aspect = iResolution.y/iResolution.x;
-	pos = (pos-vec2(0.5,0.5*aspect))*2;
-	
-	
 	float dist = fract(frequency*(length(pos)-iGlobalTime))-0.5;
-	float intensity = 1-smoothstep(0.5, 0.5+0.01*frequency, dist);
-	intensity -= (1-smoothstep(0.5-0.11*frequency, 0.5-0.1*frequency, dist));
-	vec3 color = vec3(0.0,intensity,0.0);
-	if(frequency >= 5){
+	float intensity = 1.0 -smoothstep(0.5, 0.5+0.01*frequency, dist);
+	intensity -= (1.0 -smoothstep(0.5-0.11*frequency, 0.5-0.1*frequency, dist));
+	vec3 color = vec3(0.0, intensity,0.0);
+	if(frequency >= 5.0){
 		color = vec3(0.0,1.0,0.0);
 	}
 	return color;
@@ -23,21 +19,31 @@ vec3 Rings(vec2 pos)
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    vec2 pos = fragCoord.xy/iResolution.xx;
+    vec2 pos = fragCoord.xy/iResolution.xy;
+	float aspect = iResolution.y/iResolution.x; 
+	pos = (2.0*pos-vec2(1.0, 1.0)) * vec2(1.0, aspect);
 
-    VoronoiResult voronoiResult = voronoi( 16.0*pos );
+    
 	
-    // borders	
+    // Hexgrid	
+	VoronoiResult voronoiResult = voronoi( 8.0*pos );
 	vec3 color = mix(Rings(pos), vec3(0.0), smoothstep( 0.00, 0.04, voronoiResult.borderDist ) );
 	
+	// center Hexagon
+	
+	float centerHexDist = hexagonDistance( 16.0*pos );
+	float centerHexBorder = smoothstep( 0.99, 1.03, centerHexDist );
+	centerHexBorder += 1.0-smoothstep( 0.95, 0.99, centerHexDist );
+	color= mix(vec3(0.0, 1.0, 0.0), color, centerHexBorder );
+	
 	//ghosting
+	float intensity = 0.2 - max(0.0,frequency-4.8);
 	vec2 uv = fragCoord.xy/iResolution.xy;
-	
-	color += 0.6 * texture2D(texLastFrame, uv).rgb;
+	color += intensity * 0.6 * texture2D(texLastFrame, uv).rgb;
 	color -= 1.0 / 256.0; //dim over time to avoid leftovers
-	color = clamp(color, vec3(0), vec3(1));
+	color = clamp(color, vec3(0.0), vec3(1.0));
 	
-	fragColor = vec4(color,1.0);
+	fragColor = vec4(color, 1.0);
 }
 
 void main()
