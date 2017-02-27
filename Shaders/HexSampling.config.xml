@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DemoData2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Uniforms>
+    <Uniform>
+      <UniformName>hexagonize</UniformName>
+      <Keyframes>
+        <Keyframe>
+          <Time>0</Time>
+          <Value>0</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>10</Time>
+          <Value>1</Value>
+        </Keyframe>
+      </Keyframes>
+    </Uniform>
+  </Uniforms>
+  <Tracks>
+    <Track>
+      <Name>sum</Name>
+      <ShaderKeyframes>
+        <ShaderKeyframe>
+          <Time>0</Time>
+          <ShaderPath>.\HexSampling.glsl</ShaderPath>
+        </ShaderKeyframe>
+      </ShaderKeyframes>
+    </Track>
+  </Tracks>
+  <Textures />
+  <SoundFileName />
+</DemoData2>
