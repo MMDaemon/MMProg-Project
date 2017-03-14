@@ -9,6 +9,13 @@ uniform float iGlobalTime;
 const float epsilon = 0.0001;
 const int maxSteps = 512;
 const float miss = -10000;
+const float bigNumber = 10000.0;
+const float eps = 0.001;
+
+float quad(float a)
+{
+	return a * a;
+}
 
 float opS( float d1, float d2 )
 {
@@ -19,6 +26,24 @@ float sdHexPrism( vec3 p, vec2 h )
 {
     vec3 q = abs(p);
     return max(q.z-h.y,max((q.x*0.866025+q.y*0.5),q.y)-h.x);
+}
+
+float sphere(vec3 M, float r, vec3 O, vec3 d)
+{
+	vec3 MO = O - M;
+	float root = quad(dot(d, MO))- quad(length(d)) * (quad(length(MO)) - quad(r));
+	if(root < eps)
+	{
+		return -bigNumber;
+	}
+	float p = -dot(d, MO);
+	float q = sqrt(root);
+    return (p - q) > 0.0 ? p - q : p + q;
+}
+
+vec3 sphereNormal(vec3 M, vec3 P)
+{
+	return normalize(P - M);
 }
 
 float distField(vec3 point)
@@ -32,17 +57,16 @@ float distField(vec3 point)
    	float scyl = sdHexPrism( point, vec2(height-t*2.0, depth+t+.001));
     
     return opS(scyl,cyl);
-
 }
 
-float sphereTracing(vec3 O, vec3 dir, float minT, float maxT, int maxSteps)
+float sphereTracing(vec3 origin, vec3 dir, float minT, float maxT, int maxSteps)
 {
 	float t = minT;
 	//step along the ray 
     for(int steps = 0; (steps < maxSteps) && (t < maxT); ++steps)
     {
 		//calculate new point
-		vec3 point = O + t * dir;
+		vec3 point = origin + t * dir;
 		//check how far the point is from the nearest surface
         float dist = distField(point);
 		//if we are very close
@@ -59,6 +83,34 @@ float sphereTracing(vec3 O, vec3 dir, float minT, float maxT, int maxSteps)
 	return miss;
 }
 
+struct Intersection
+{
+	bool exists;
+	vec3 normal;
+	vec3 intersectP;
+};
+
+Intersection rayCastScene(vec3 origin, vec3 dir)
+{
+	float t = bigNumber;
+	vec3 M = vec3(-bigNumber);
+	vec3 normal = vec3(0.0, 0.0, 0.0);
+	vec3 newM = vec3(0, 0, 1+sin(iGlobalTime));
+	float newT = sphere(newM, 0.1, origin, dir);
+	if (0.0 < newT && newT < t)
+	{	
+		t = newT;
+		M = newM;
+	}
+	Intersection obj;
+	obj.exists = t < bigNumber;
+	if(obj.exists){
+		obj.intersectP = origin + t * dir;
+		obj.normal = sphereNormal(M, obj.intersectP);
+	}
+	return obj;
+}
+
 vec3 ambientDiffuse(vec3 material, vec3 normal)
 {
 	vec3 ambient = vec3(0);
@@ -70,13 +122,13 @@ vec3 ambientDiffuse(vec3 material, vec3 normal)
 	return ambient + diffuse * material;
 }
 
-float calcAO( in vec3 pos, in vec3 nor )
+float calcAO(vec3 pos, vec3 nor )
 {
 	float occ = 0.0;
     float sca = 1.0;
     for( int i=0; i<5; i++ )
     {
-        float hr = 0.01 + 0.12*float(i)/4.0;
+        float hr = 0.01 + 0.12*float(i)/3.0;
         vec3 aopos =  nor * hr + pos;
         float dd = distField(aopos);
         occ += -(dd-hr)*sca;
@@ -88,25 +140,43 @@ float calcAO( in vec3 pos, in vec3 nor )
 void main()
 {
 	vec3 camP = calcCameraPos();
-	camP.z += iGlobalTime*2;
+	//camP.z += iGlobalTime*2;
 	vec3 camDir = calcCameraRayDir(80.0, gl_FragCoord.xy, iResolution);
 
 	float maxT = 100;
 	//start point is the camera position
-	float t = sphereTracing(camP, camDir, 0, maxT, maxSteps);
+	float sphereTraceDist = sphereTracing(camP, camDir, 0, maxT, maxSteps);
 	
 	vec3 color = vec3(0);
-	if(0 < t)
+	
+	if(0 < sphereTraceDist)
 	{
-		vec3 point = camP + t * camDir;
+		vec3 point = camP + sphereTraceDist * camDir;
 		vec3 normal = getNormal(point, 0.01);
 		
-		//// Ambient lighting
-		//color = ambientDiffuse(vec3(1.0),normal);
-		
-		// AmbientOcclusion lighting
 		color = vec3(0,1-calcAO(point, normal),0);
-		color = mix(color, vec3(0),t/30);
+		color = mix(color, vec3(0),sphereTraceDist/30);
 	}
+	
+	Intersection rayTraceIntersection = rayCastScene(camP, camDir);
+	
+	if(rayTraceIntersection.exists && (distance(camP, rayTraceIntersection.intersectP)<sphereTraceDist || 0 >= sphereTraceDist)){
+		color = ambientDiffuse(vec3(1.0), rayTraceIntersection.normal);
+		
+		// calculate reflection
+		vec3 reflectOrigin = rayTraceIntersection.intersectP;
+		vec3 reflectDir = reflect(camDir, rayTraceIntersection.normal);
+		float reflectionDist = sphereTracing(reflectOrigin, reflectDir, 0, maxT, maxSteps);
+		vec3 reflectionColor = vec3(0.0);
+		
+		if(0 < reflectionDist){
+			vec3 point = reflectOrigin + reflectionDist * reflectDir;
+			vec3 normal = getNormal(point, 0.01);
+
+			reflectionColor = vec3(0, 1-calcAO(point, normal),0);
+		}
+		color=mix(color, reflectionColor, 0.2);
+	}
+	
 	gl_FragColor = vec4(color, 1);
 }
