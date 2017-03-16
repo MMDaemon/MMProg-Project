@@ -140,7 +140,7 @@ float calcAO(vec3 pos, vec3 nor )
 void main()
 {
 	vec3 camP = calcCameraPos();
-	//camP.z += iGlobalTime*2;
+
 	vec3 camDir = calcCameraRayDir(80.0, gl_FragCoord.xy, iResolution);
 
 	float maxT = 100;
