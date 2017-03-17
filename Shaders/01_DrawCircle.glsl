@@ -78,14 +78,18 @@ vec3 background(){
 	
 	float value = random(p.y);
 	//value = random(p.x*tanh((sinh(p.y))*iGlobalTime*iGlobalTime*iGlobalTime*iGlobalTime*iGlobalTime));
-	value = random(p.y*p.x/*+p.y*/*tanh(0.9*iGlobalTime));
+	value = random(p.y*p.x*tanh(0.9*iGlobalTime));
 	
+/*	if(length(p)>0.42){
+		value=random(p.y*p.x*sinh(0.9*iGlobalTime));
+	}*/
 	
 	return value;
 	
 
 	//return vec3(0);
 }
+
 //Draw circle
 vec3 s01_drawCircle(float startTime){
 
@@ -103,31 +107,26 @@ vec3 s01_drawCircle(float startTime){
 
 	
 	vec2 dir = vec2(sin(time*time),cos(time*time));
-	float angle = dot(dir,p);
+	float dirOrth = dot(dir,p);
 	
 	
-	vec3 mask = vec3(0); //Background mask
+	vec3 mask = vec3(1); //Background mask
 
 	if(time>=0 && time<=end_anim_2){
 		
 		if(time<end_anim_1){
-			if(angle<0 && p.y>0){
+			if(dirOrth<0 && p.y>0){
 				mask = vec3(1);
 			}
 		}
 		else if(time< end_anim_2){
-			angle = dot(p,dir);
-			if(angle<0 || p.y>0){
+			dirOrth = dot(p,dir);
+			if(dirOrth<0 || p.y>0){
 				mask = vec3(1);
 			}
 		}
-		else{
-			mask = vec3(1);
-		}
 	}
-	else{
-		mask=vec3(1);
-	}
+
 	
 		
 		
@@ -145,7 +144,7 @@ vec3 s01_drawCircle(float startTime){
 	float t = sphere(vec3(0, 0, 1), rSphere, camP, camDir);
 
 	vec3 posSphere2  =vec3(0, 0, 1);
-	float t2 = sphere(posSphere2,/* rSphere-thickness*/rSphere2, camP, camDir);
+	float t2 = sphere(posSphere2, rSphere2, camP, camDir);
 
 	
 
@@ -165,7 +164,7 @@ vec3 s01_drawCircle(float startTime){
 					
 			if(p.y<.0)
 				x=(rSphere*3)-p.x;
-			color = background()+0.6*mask;
+			color = background()*0.6*mask;
 		}
 		else{
 			//sphere
@@ -448,6 +447,7 @@ vec3 scene1_4(float startTime){
 	
 	return vec3(.0);
 }
+
 vec3 scene1_5(float startTime){
 	float time = iGlobalTime-startTime;
 
@@ -529,7 +529,7 @@ void main()
 		color =scene1_5(endScene1_2);
 	}
 	
-	gl_FragColor = vec4(color, 1.0);
+	gl_FragColor = vec4(vec3(1)-color, 1.0);
 }
 
 
