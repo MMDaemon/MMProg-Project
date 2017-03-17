@@ -516,38 +516,39 @@ vec3 s03_3Sphere(float startTime){
 
 	}
 	float timeOffset = 16.0;
+	vec3 sphereCol = -vec3(0.7);
 	if(tLeft1>.0){
 
-			color +=smoothstep(.0,PI/2,(1-p.x)-time+timeOffset)*vec3(.0,-.7,.0);
+			color +=smoothstep(.0,PI/2,(1-p.x)-time+timeOffset)*sphereCol;
 
 	}
 	if(tLeft2>.0){
 
-			color -= smoothstep(.0,PI/2,(1-p.x)-time+timeOffset)*vec3(.0,-.7,.0);
+			color -= smoothstep(.0,PI/2,(1-p.x)-time+timeOffset)*sphereCol;
 
 
 	}
 	if(tMid1>.0){
 
-		color +=smoothstep(.0,PI,(2-p.x)-time+timeOffset)*vec3(.0,-.7,.0);
+		color +=smoothstep(.0,PI,(2-p.x)-time+timeOffset)*sphereCol;
 
 
 	}
 	if(tMid2>.0){
 
-			color -= smoothstep(.0,PI,(2-p.x)-time+timeOffset)*vec3(.0,-.7,.0);
+			color -= smoothstep(.0,PI,(2-p.x)-time+timeOffset)*sphereCol;
 
 
 	}
 	if(tRight1>.0){
 
-		color +=smoothstep(.0,PI/2,(1-p.x)-time+timeOffset)*vec3(.0,-.7,.0);
+		color +=smoothstep(.0,PI/2,(1-p.x)-time+timeOffset)*sphereCol;
 
 
 	}
 	if(tRight2>.0){
 
-			color -= smoothstep(.0,PI/2,(1-p.x)-time+timeOffset)*vec3(.0,-.7,.0);
+			color -= smoothstep(.0,PI/2,(1-p.x)-time+timeOffset)*sphereCol;
 
 
 	}
@@ -743,7 +744,7 @@ vec3 s04_3SphereToHexPoints(float startTime){
 	float time5 = 3.0;
 	float time6 = 3.6;
 	
-	float r = 0.033;
+	float r = 0.04;//0.033;
 	float rWave = 0.1-0.1*smoothstep(.0,PI/2,time);
 	float rWave2 = 0.1-0.1*smoothstep(time1,time1+PI/2,time);
 	float rWave3 = 0.1-0.1*smoothstep(time2,time2+PI/2,time);
@@ -805,45 +806,46 @@ vec3 s04_3SphereToHexPoints(float startTime){
 
 	
 	if(t1>.0  ){
-		color =mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )* vec3(.0,1.0,.0)*step(.0,time);
+		color =/*mix(vec3(1.0, 1.0, 1.0),  color, centerHexBorder )* */vec3(1.0,1.0,1.0)*step(.0,time);
 		
 	}
 	else if(t2>.0){
-		color =mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )*vec3(.0,1.0,.0)*step(0.6,time);
+		color =/*mix(vec3(1.0, 1.0, 1.0),  color, centerHexBorder )**/vec3(1.0,1.0,1.0)*step(0.6,time);
 	}
 	else if(t3>.0){
-		color =mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )*vec3(.0,1.0,.0)*step(1.2,time);
+		color =/*mix(vec3(1.0, 1.0, 1.0),  color, centerHexBorder )**/vec3(1.0,1.0,1.0)*step(1.2,time);
 	}
 	else if(t4>.0){
-		color =mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )*vec3(.0,1.0,.0)*step(1.8,time);
+		color =/*mix(vec3(1.0, 1.0, 1.0),  color, centerHexBorder )**/vec3(1.0,1.0,1.0)*step(1.8,time);
 	}
 	else if(t5>.0){
-		color =mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )*vec3(.0,1.0,.0)*step(2.4,time);
+		color =/*mix(vec3(1.0, 1.0, 1.0),  color, centerHexBorder )**/vec3(1.0,1.0,1.0)*step(2.4,time);
 	}
 	else if(t6>.0){
-		color =mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )*vec3(.0,1.0,.0)*step(3.0,time);
+		color =/*mix(vec3(1.0, 1.0, 1.0),  color, centerHexBorder )**/vec3(1.0,1.0,1.0)*step(3.0,time);
 	}
 	else{
+	vec3 col = vec3(.7);
 		if(time >.0){
 			if(t16>.0){
 				color = vec3(.0);
 			}
 			else if(t15>.0){
-				color +=vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color +=col*10*((length(-p+vec2(0.0,posR))));
 			}
 			else if(t14>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t13>.0){
-				color +=vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color +=col*10*((length(-p+vec2(0.0,posR))));
 			}
 			else if(t12>.0){
 				
 				color += vec3(.0);
 			}
 			else if(t11>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 
 		}
@@ -852,21 +854,21 @@ vec3 s04_3SphereToHexPoints(float startTime){
 				color = vec3(.0);
 			}
 			else if(t25>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 			else if(t24>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t23>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 			else if(t22>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t21>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 
 		}
@@ -875,21 +877,21 @@ vec3 s04_3SphereToHexPoints(float startTime){
 				color = vec3(.0);
 			}
 			else if(t35>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 			else if(t34>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t33>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 			else if(t32>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t31>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 
 		}
@@ -898,21 +900,21 @@ vec3 s04_3SphereToHexPoints(float startTime){
 				color = vec3(.0);
 			}
 			else if(t45>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 			else if(t44>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t43>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 			else if(t42>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t41>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 
 		}
@@ -921,21 +923,21 @@ vec3 s04_3SphereToHexPoints(float startTime){
 				color = vec3(.0);
 			}
 			else if(t55>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 			else if(t54>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t53>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 			else if(t52>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t51>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 
 		}
@@ -945,21 +947,21 @@ vec3 s04_3SphereToHexPoints(float startTime){
 				color = vec3(.0);
 			}
 			else if(t65>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 			else if(t64>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t63>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 			else if(t62>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t61>.0){
-				color =vec3(.0,.7,.0)*10*((length(-p+vec2(0.0,posR))));
+				color =col*10*((length(-p+vec2(0.0,posR))));
 			}
 		}
 
