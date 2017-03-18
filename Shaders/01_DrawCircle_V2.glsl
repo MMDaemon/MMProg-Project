@@ -1107,12 +1107,8 @@ vec3 s05_HexPointsToHex(float startTime){
 	
 	
 
-	vec3 colorS03 = background2()-color;
-		color = colorS03-color;
-		
-	if(time >3.5){
-		//color *= vec3(1.0,.0,1.0)*smoothstep(p.x,p.y,time);
-	}
+	color = background2()-color;
+
 	
 	return color;
 }
@@ -1133,7 +1129,7 @@ vec3 s06_HexRot(float startTime){
 	if(time>endScene3_0){
 		float ang = PI/2*smoothstep(.0,PI/2,time-endScene3_0);
 		if( time >endScene3_2){
-			ang+=((time-endScene3_2)*(time-endScene3_2));
+			ang+=((time-endScene3_2)+0.7*(time-endScene3_2));
 		}
 		rotAngle=ang;//time-endScene3_0;//PI/2.0;
 			
@@ -1144,6 +1140,7 @@ vec3 s06_HexRot(float startTime){
 		);
 		p = mRot*p;
 	}
+	
 	
 
 	float mask=1;
@@ -1177,8 +1174,8 @@ vec3 s06_HexRot(float startTime){
 	vec3 color=vec3(0);
 	float scale=2.6;
 	if(	 time >endScene3_2){
-		scale +=smoothstep(0.0,2.0,time-endScene3_2)*(-2.0);
-		scale +=-(smoothstep(2.0,3.0,time-endScene3_2))*(16.0);//-2.5);
+		scale +=smoothstep(0.0,1.8,time-endScene3_2)*(-1.5);
+		scale +=-(smoothstep(1.8,2.2,time-endScene3_2))*(16.0);//-2.5);
 	}
 	float centerHexDist = hexagonDistance( scale*p );
 	float centerHexBorder = smoothstep( 0.99, 1.03, centerHexDist );
@@ -1218,13 +1215,13 @@ vec3 s05_Hex(float startTime){
 	
 //	pos = (2.0*pos-vec2(1.0, 1.0)) * vec2(1.0, aspect);
 	
-	float rotAngle=PI/2.0;
+/*	float rotAngle=PI/2.0;
 	
 	mat2 mRot = mat2(
 		cos(rotAngle),sin(rotAngle),
 		-sin(rotAngle), cos(rotAngle)
 	);
-	pos = mRot*pos;
+	pos = mRot*pos;*/
 	
 		
 	vec3 color=vec3(0);
@@ -1345,7 +1342,7 @@ void main()
 	float endScene1_3 = endScene1_2+14.0;//;+14.0;
 	float endScene1_4 = endScene1_3+3.5;
 	float endScene1_5 = endScene1_4+3.5;
-	float endScene1_6 = endScene1_5+6.94262;
+	float endScene1_6 = endScene1_5+6.74262;
 
 	if(iGlobalTime<endScene1_0){
 		color = /*vec3(1.0)-*/background();
