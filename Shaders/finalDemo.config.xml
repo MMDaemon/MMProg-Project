@@ -83,6 +83,14 @@
           <Time>88</Time>
           <Value>1</Value>
         </Keyframe>
+        <Keyframe>
+          <Time>103.9</Time>
+          <Value>1</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>104</Time>
+          <Value>0</Value>
+        </Keyframe>
       </Keyframes>
     </Uniform>
     <Uniform>
@@ -248,8 +256,56 @@
           <Value>8</Value>
         </Keyframe>
         <Keyframe>
-          <Time>104</Time>
+          <Time>103.9</Time>
           <Value>11</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>104</Time>
+          <Value>-2</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>114</Time>
+          <Value>0</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>116.5</Time>
+          <Value>3</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>119</Time>
+          <Value>9</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>121.5</Time>
+          <Value>14</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>124</Time>
+          <Value>20</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>126.5</Time>
+          <Value>30</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>129</Time>
+          <Value>45</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>131.5</Time>
+          <Value>65</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>134</Time>
+          <Value>90</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>136.5</Time>
+          <Value>120</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>139</Time>
+          <Value>155</Value>
         </Keyframe>
       </Keyframes>
     </Uniform>
@@ -257,7 +313,19 @@
       <UniformName>iCamRotZ</UniformName>
       <Keyframes>
         <Keyframe>
-          <Time>63.3474579</Time>
+          <Time>103.9</Time>
+          <Value>0</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>104</Time>
+          <Value>2.6179</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>114</Time>
+          <Value>2.6179</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>124</Time>
           <Value>0</Value>
         </Keyframe>
       </Keyframes>
@@ -284,6 +352,18 @@
         </Keyframe>
         <Keyframe>
           <Time>80</Time>
+          <Value>1</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>90</Time>
+          <Value>0</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>104</Time>
+          <Value>0</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>114</Time>
           <Value>1</Value>
         </Keyframe>
       </Keyframes>
@@ -327,6 +407,59 @@
         </Keyframe>
       </Keyframes>
     </Uniform>
+    <Uniform>
+      <UniformName>spherePos</UniformName>
+      <Keyframes>
+        <Keyframe>
+          <Time>104</Time>
+          <Value>9</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>114</Time>
+          <Value>10</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>116.5</Time>
+          <Value>11.5</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>119</Time>
+          <Value>14</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>121.5</Time>
+          <Value>17</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>124</Time>
+          <Value>21</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>126.5</Time>
+          <Value>31</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>129</Time>
+          <Value>46</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>131.5</Time>
+          <Value>66</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>134</Time>
+          <Value>91</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>136.5</Time>
+          <Value>121</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>139</Time>
+          <Value>156</Value>
+        </Keyframe>
+      </Keyframes>
+    </Uniform>
   </Uniforms>
   <Tracks>
     <Track>
@@ -355,6 +488,10 @@
         <ShaderKeyframe>
           <Time>90.04237</Time>
           <ShaderPath>.\HexSampling.glsl</ShaderPath>
+        </ShaderKeyframe>
+        <ShaderKeyframe>
+          <Time>104.025421</Time>
+          <ShaderPath>.\HexTunnel.glsl</ShaderPath>
         </ShaderKeyframe>
       </ShaderKeyframes>
     </Track>
