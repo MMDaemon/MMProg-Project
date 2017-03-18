@@ -156,12 +156,15 @@ vec3 background(float rotAngle=0, float time=.0){
 	//return vec3(0);
 }
 
-vec3 background_backup(float rotAngle=0){
-	rotAngle+=0.0001;
-	//camera setup
+
+
+vec3 background2(float rotAngle=0){
+
+	
 	float fov = 90.0;
 	float tanFov = tan(fov / 2.0 * 3.14159 / 180.0) / iResolution.x;
 	vec2 p = tanFov * (gl_FragCoord.xy * 2.0 - iResolution.xy);
+	
 
 	
 	mat2 mRot = mat2(
@@ -169,40 +172,50 @@ vec3 background_backup(float rotAngle=0){
 		-sin(rotAngle), cos(rotAngle)
 	);
 	p = mRot*p;
-	
+
+
+
 	vec3 camP = vec3(0.0, 0.0, 0.0);
 	vec3 camDir = normalize(vec3(p.x, p.y, 1.0));
 	
-	
-	float value = random(p.y);
-	//value = random(p.x*tanh((sinh(p.y))*iGlobalTime*iGlobalTime*iGlobalTime*iGlobalTime*iGlobalTime));
-	
-	
-	value = random((p.x+0.0*cos(p.x))*(p.y+.22*cos(p.y))*sinh(0.8*(iGlobalTime+2.0)));
+	float rSphere = 0.4;//*aspect;
+	float thickness = 0.01/*+0.05*abs(sin(time))*/;
+	float rSphere2 = (rSphere/*-thickness*/);
 
-	rotAngle=PI/4.0;
+	//intersection
+	float t = sphere(vec3(0, 0, 1), rSphere, camP, camDir);
+		
+	t = sphere(vec3(0, 0, 1), +((p.y/p.x)*sinh(22.43)*sinh(22.43)*sqrt(22.43)), camP, camDir);
 	
-	mat2 mRot2 = mat2(
-		cos(rotAngle),sin(rotAngle),
-		-sin(rotAngle), cos(rotAngle)
-	);
-	
-	//p = mRot2*p;
-	//value += random((p.x*-cos(p.x))*(p.y*cos(p.y))*sinh(0.8*(iGlobalTime+2.0)));
-	
-	value += random((p.x*-cos(p.x))*(p.y-.22*cos(p.y))*sinh(0.8*(iGlobalTime+2.0)));
-	
-	
-/*	value += random((p.x+1.9*-cos(p.x))*(p.y-0.65*cos(p.y))*sinh(0.8*(iGlobalTime+2.0)));
-	value += random((p.x+1.9*-cos(p.x))*(p.y+0.65*cos(p.y))*sinh(0.8*(iGlobalTime+2.0)));
-	value += random((p.x+1.9*+cos(p.x))*(p.y-0.65*cos(p.y))*sinh(0.8*(iGlobalTime+2.0)));
-	
-	value/=3.0;
-	*/
-	return value;
+	vec3 posSphere2  =vec3(0, 0, 1);
+	float t2 = sphere(posSphere2,.0, camP, camDir);
 	
 
-	//return vec3(0);
+	
+	
+	vec3 back  = background(rotAngle);//+background(rotAngle);
+	vec3 color = back;//s02_(startTime*3);
+	
+	//color Spheres
+	if(t < 0)
+	{
+			//background
+			
+			color = background();
+	}
+	else {
+		if(t2<0){
+	
+			color = background()+0.3;
+		}
+	
+			else{
+				color = background();
+			}
+
+	}
+
+	return color ;
 }
 //Draw circle
 vec3 s01_drawCircle(float startTime){
@@ -380,18 +393,13 @@ vec3 s02_(float startTime){
 	return color;
 }
 vec3 s03_3Sphere(float startTime){
-	float endScene3_0 = 2.1; //rotation
-	float endScene3_1 = 3.6; //mask move right
-	float endScene3_2 = 1.6;
+
 	
-	/*float fov = 90.0;
+	float fov = 90.0;
 	float tanFov = tan(fov / 2.0 * 3.14159 / 180.0) / iResolution.x;
 	vec2 p = tanFov * (gl_FragCoord.xy * 2.0 - iResolution.xy);
-	*/
-	vec2 p = gl_FragCoord.xy/iResolution.xy;
-	float aspect = iResolution.y/iResolution.x; 
-	p = (2.0*p-vec2(1.0, 1.0)) * vec2(1.0, aspect);
 	
+
 	float time = iGlobalTime-startTime;
 	
 	float rotAngle=PI/2;
@@ -706,10 +714,14 @@ vec3 s03_3Sphere_rotbackup(float startTime){
 }
 
 vec3 s04_3SphereToHexPoints(float startTime){
+
 	float fov = 90.0;
 	float tanFov = tan(fov / 2.0 * 3.14159 / 180.0) / iResolution.x;
 	vec2 p = tanFov * (gl_FragCoord.xy * 2.0 - iResolution.xy);
 
+
+	
+	
 		vec3 camP = vec3(0.0, 0.0, 0.0);
 	vec3 camDir = normalize(vec3(p.x, p.y, 1.0));
 
@@ -744,13 +756,14 @@ vec3 s04_3SphereToHexPoints(float startTime){
 	float time5 = 3.0;
 	float time6 = 3.6;
 	
-	float r = 0.04;//0.033;
-	float rWave = 0.1-0.1*smoothstep(.0,PI/2,time);
-	float rWave2 = 0.1-0.1*smoothstep(time1,time1+PI/2,time);
-	float rWave3 = 0.1-0.1*smoothstep(time2,time2+PI/2,time);
-	float rWave4 = 0.1-0.1*smoothstep(time3,time3+PI/2,time);
-	float rWave5 = 0.1-0.1*smoothstep(time4,time4+PI/2,time);
-	float rWave6 = 0.1-0.1*smoothstep(time5,time5+PI/2,time);
+	float r = 0.035;//0.033;
+	float waveMaxR = 0.1;
+	float rWave = waveMaxR-waveMaxR*smoothstep(.0,PI/2,time);
+	float rWave2 = waveMaxR-waveMaxR*smoothstep(time1,time1+PI/2,time);
+	float rWave3 = waveMaxR-waveMaxR*smoothstep(time2,time2+PI/2,time);
+	float rWave4 = waveMaxR-waveMaxR*smoothstep(time3,time3+PI/2,time);
+	float rWave5 = waveMaxR-waveMaxR*smoothstep(time4,time4+PI/2,time);
+	float rWave6 = waveMaxR-waveMaxR*smoothstep(time5,time5+PI/2,time);
 	float posR = 0.44;
 	
 
@@ -806,7 +819,7 @@ vec3 s04_3SphereToHexPoints(float startTime){
 
 	
 	if(t1>.0  ){
-		color =/*mix(vec3(1.0, 1.0, 1.0),  color, centerHexBorder )* */vec3(1.0,1.0,1.0)*step(.0,time);
+		color =/*mix(vec3(1.0, 1.0, 1.0),  color, centerHexBorder )**/ vec3(1.0,1.0,1.0)*step(.0,time);
 		
 	}
 	else if(t2>.0){
@@ -825,27 +838,29 @@ vec3 s04_3SphereToHexPoints(float startTime){
 		color =/*mix(vec3(1.0, 1.0, 1.0),  color, centerHexBorder )**/vec3(1.0,1.0,1.0)*step(3.0,time);
 	}
 	else{
-	vec3 col = vec3(.7);
+	vec3 col = vec3(1.0);
 		if(time >.0){
+			vec2 center = vec2(posR,0.0);
+		
 			if(t16>.0){
 				color = vec3(.0);
 			}
 			else if(t15>.0){
-				color +=col*10*((length(-p+vec2(0.0,posR))));
+				color =col*0.3;
 			}
 			else if(t14>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t13>.0){
-				color +=col*10*((length(-p+vec2(0.0,posR))));
+				color =col*0.6;
 			}
 			else if(t12>.0){
 				
-				color += vec3(.0);
+				color = vec3(.0);
 			}
 			else if(t11>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col;
 			}
 
 		}
@@ -854,21 +869,21 @@ vec3 s04_3SphereToHexPoints(float startTime){
 				color = vec3(.0);
 			}
 			else if(t25>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col*0.3;
 			}
 			else if(t24>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t23>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col*0.6;
 			}
 			else if(t22>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t21>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col;
 			}
 
 		}
@@ -877,21 +892,21 @@ vec3 s04_3SphereToHexPoints(float startTime){
 				color = vec3(.0);
 			}
 			else if(t35>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col*0.3;
 			}
 			else if(t34>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t33>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col*0.6;
 			}
 			else if(t32>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t31>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col;
 			}
 
 		}
@@ -900,21 +915,21 @@ vec3 s04_3SphereToHexPoints(float startTime){
 				color = vec3(.0);
 			}
 			else if(t45>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col*0.3;
 			}
 			else if(t44>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t43>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col*0.6;
 			}
 			else if(t42>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t41>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col;
 			}
 
 		}
@@ -923,21 +938,21 @@ vec3 s04_3SphereToHexPoints(float startTime){
 				color = vec3(.0);
 			}
 			else if(t55>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col*0.3;
 			}
 			else if(t54>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t53>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col*0.6;
 			}
 			else if(t52>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t51>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col;
 			}
 
 		}
@@ -947,21 +962,21 @@ vec3 s04_3SphereToHexPoints(float startTime){
 				color = vec3(.0);
 			}
 			else if(t65>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color = col*0.3;
 			}
 			else if(t64>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t63>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col*0.6;
 			}
 			else if(t62>.0){
 				
 				color = vec3(.0);
 			}
 			else if(t61>.0){
-				color =col*10*((length(-p+vec2(0.0,posR))));
+				color =col;
 			}
 		}
 
@@ -972,6 +987,8 @@ vec3 s04_3SphereToHexPoints(float startTime){
 
 }
 vec3 s05_HexPointsToHex(float startTime){
+
+
 		float fov = 90.0;
 	float tanFov = tan(fov / 2.0 * 3.14159 / 180.0) / iResolution.x;
 	vec2 p = tanFov * (gl_FragCoord.xy * 2.0 - iResolution.xy);
@@ -981,8 +998,7 @@ vec3 s05_HexPointsToHex(float startTime){
 
 	float time = iGlobalTime-startTime;
 	
-	
-	
+
 //	p = (2.0*p-vec2(1.0, 1.0)) * vec2(1.0, aspect);
 	
 	float rotAngle=PI/2.0;
@@ -1002,7 +1018,7 @@ vec3 s05_HexPointsToHex(float startTime){
 	centerHexBorder += 1.0-smoothstep( 0.95, 0.99, centerHexDist );
 	//color= mix(vec3(0.0, 1.0, 0.0), color, centerHexBorder );
 	
-		float r = 0.033;
+		float r = 0.035;//0.033;
 		
 		
 		float posR = 0.44;
@@ -1027,25 +1043,25 @@ vec3 s05_HexPointsToHex(float startTime){
 
 
 
-	
+	vec3 colorDots = vec3(1.0);
 	if(t1>.0  ){
-		color =mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )* vec3(.0,1.0,.0);
+		color =/*mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )**/ colorDots*smoothstep(1.1,.0,time);
 		
 	}
 	else if(t2>.0){
-		color =mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )*vec3(.0,1.0,.0);
+		color =/*mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )**/colorDots*smoothstep(2.2,.0,time);
 	}
 	else if(t3>.0){
-		color =mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )*vec3(.0,1.0,.0);
+		color =/*mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )**/colorDots*smoothstep(3.3,.0,time);
 	}
 	else if(t4>.0){
-		color =mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )*vec3(.0,1.0,.0);
+		color =/*mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )**/colorDots*smoothstep(4.4,.0,time);
 	}
 	else if(t5>.0){
-		color =mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )*vec3(.0,1.0,.0);
+		color =/*mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )**/colorDots*smoothstep(5.5,.0,time);
 	}
 	else if(t6>.0){
-		color =mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )*vec3(.0,1.0,.0);
+		color =/*mix(vec3(0.0, 1.0, 0.0),  color, centerHexBorder )**/colorDots*smoothstep(6.6,.0,time);
 	}
 	
 	
@@ -1060,7 +1076,7 @@ vec3 s05_HexPointsToHex(float startTime){
 	);
 	p = mRot2*p;
 	
-	vec2 dir = vec2(-sin(time+time),cos(time+time));
+	vec2 dir = vec2(-sin(time*2.0),cos(time*2.0));
 	float angle = dot(dir,p);
 	
 	
@@ -1070,28 +1086,119 @@ vec3 s05_HexPointsToHex(float startTime){
 		
 		if(time<end_anim_1){
 			if(angle<0 && p.y>0){
-				mask = vec3(1)*0.6;
+				mask = vec3(1);//*0.6;
 			}
 		}
 		else if(time< end_anim_2){
 			angle = dot(p,dir);
 			if(angle<0 || p.y>0){
-				mask = vec3(1)*0.6;
+				mask = vec3(1);//*0.6;
 			}
 		}
 		else{
-			mask = vec3(1)*0.6;
+			mask = vec3(1);//*0.6;
 		}
 	}
 	else{
-		mask=vec3(1)*0.6;
+		mask=vec3(1);//*0.6;
+	}
+
+	color = mix(mask,  color, centerHexBorder )+color;
+	
+	
+
+	vec3 colorS03 = background2()-color;
+		color = colorS03-color;
+		
+	if(time >3.5){
+		//color *= vec3(1.0,.0,1.0)*smoothstep(p.x,p.y,time);
 	}
 	
-	color = mix(mask,  color, centerHexBorder )*vec3(.0,1.0,.0);
+	return color;
+}
+vec3 s06_HexRot(float startTime){
+
+	float endScene3_0 = 1.6; //rotation once
+	float endScene3_1 = 3.3; //mask move right
+	float endScene3_2 = endScene3_1+1.0; //rotation
+	
+	float fov = 90.0;
+	float tanFov = tan(fov / 2.0 * 3.14159 / 180.0) / iResolution.x;
+	vec2 p = tanFov * (gl_FragCoord.xy * 2.0 - iResolution.xy);
+	
+	float time = iGlobalTime-startTime;
+	
+	float rotAngle=0;
+	
+	if(time>endScene3_0){
+		float ang = PI/2*smoothstep(.0,PI/2,time-endScene3_0);
+		if( time >endScene3_2){
+			ang+=((time-endScene3_2)*(time-endScene3_2));
+		}
+		rotAngle=ang;//time-endScene3_0;//PI/2.0;
+			
+	
+		mat2 mRot = mat2(
+			cos(rotAngle),sin(rotAngle),
+			-sin(rotAngle), cos(rotAngle)
+		);
+		p = mRot*p;
+	}
+	
+
+	float mask=1;
+
+	if(time<endScene3_1){
+		mask = step(-time*time,p.y);
+		mask *=step(p.y,.0);
+
+	}
+	else{
+		
+		mask =step(p.y,.0);
+		float st = time-endScene3_1;
+		mask += step(p.y,st*st);
+
+	}
+	
+		vec3 camP = vec3(0.0, 0.0, 0.0);
+	vec3 camDir = normalize(vec3(p.x, p.y, 1.0));
+
+	
+	float rotAngle2=PI/2.0;
+	
+	mat2 mRot = mat2(
+		cos(rotAngle2),sin(rotAngle2),
+		-sin(rotAngle2), cos(rotAngle2)
+	);
+	p = mRot*p;
+	
+		
+	vec3 color=vec3(0);
+	float scale=2.6;
+	if(	 time >endScene3_2){
+		scale +=smoothstep(0.0,2.0,time-endScene3_2)*(-2.0);
+		scale +=-(smoothstep(2.0,3.0,time-endScene3_2))*(16.0);//-2.5);
+	}
+	float centerHexDist = hexagonDistance( scale*p );
+	float centerHexBorder = smoothstep( 0.99, 1.03, centerHexDist );
+	centerHexBorder += 1.0-smoothstep( 0.95, 0.99, centerHexDist );
+	//color= mix(vec3(0.0, 1.0, 0.0), color, centerHexBorder );
+
+
+	color = mix(vec3(1.0),  color, centerHexBorder )+color;
+	if(mask<0.9){
+		color = background2(rotAngle)-color;
+	}
+	else{
+		color = vec3(1)-color*vec3(.0,1.0,.0);
+	}
+	
 	
 	
 	return color;
 }
+
 
 
 
@@ -1128,7 +1235,7 @@ vec3 s05_Hex(float startTime){
 	centerHexBorder += 1.0-smoothstep( 0.95, 0.99, centerHexDist );
 	color= mix(vec3(0.0, 1.0, 0.0), color, centerHexBorder );
 	
-	return color;
+	return vec3(1)-color;
 
 }
 
@@ -1237,7 +1344,8 @@ void main()
 	float endScene1_2 = endScene1_1+10.0;
 	float endScene1_3 = endScene1_2+14.0;//;+14.0;
 	float endScene1_4 = endScene1_3+3.5;
-	float endScene1_5 = endScene1_4+8.0;
+	float endScene1_5 = endScene1_4+3.5;
+	float endScene1_6 = endScene1_5+6.94262;
 
 	if(iGlobalTime<endScene1_0){
 		color = /*vec3(1.0)-*/background();
@@ -1257,10 +1365,15 @@ void main()
 		color+= -s04_3SphereToHexPoints(endScene1_3);
 	}
 	else if(iGlobalTime< endScene1_5){
-	    color = s03_3Sphere(endScene1_2);
-		color += -s05_HexPointsToHex(endScene1_4);
+
+		color = s05_HexPointsToHex(endScene1_4);
+	}
+	else if(iGlobalTime< endScene1_6){
+
+		color = s06_HexRot(endScene1_5);
 	}
 	else {
+		
 		color = s05_Hex(endScene1_3);
 	}
 	
