@@ -1,10 +1,11 @@
 #version 330
 
 #include "../libs/camera.glsl"
+#include "3dHexgridRaymarch.glsl"
 
 uniform vec2 iResolution;
-uniform float iGlobalTime;
 uniform float dimensionality;
+uniform float reflectionFactor;
 
 const float epsilon = 0.0001;
 const int maxSteps = 128;
@@ -77,10 +78,19 @@ void main()
 	vec3 color = vec3(0.0, 0.0, 0.0);
 	if(objectHit)
 	{
-		vec3 lightDir = normalize(vec3(cos(iGlobalTime), 1.0, sin(iGlobalTime)));
+		vec3 lightDir = normalize(vec3(1.0, 1.0, -0.2));
 		vec3 normal = getNormal(point);
 		float lambert = max(0.2 ,dot(normal, lightDir));
 		color = mix(vec3(1.0),lambert * vec3(1.0, 1.0, 1.0),dimensionality);
+		
+		if(abs(point.y)<2.9 && reflectionFactor>0.0){
+			// calculate reflection
+			vec3 reflectOrigin = point;
+			vec3 reflectDir = reflect(camDir, normal);
+			vec3 reflectionColor = TRACE_main(reflectOrigin, reflectDir);
+		
+			color = mix(color, reflectionColor, reflectionFactor);
+		}
 	}
 	//fog
 	float tmax = 5.0 + dimensionality*5;

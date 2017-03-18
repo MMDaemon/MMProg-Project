@@ -25,6 +25,22 @@
           <Time>0</Time>
           <Value>0</Value>
         </Keyframe>
+        <Keyframe>
+          <Time>4</Time>
+          <Value>0</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>5.7</Time>
+          <Value>0.4</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>6.4</Time>
+          <Value>0.4</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>8</Time>
+          <Value>1</Value>
+        </Keyframe>
       </Keyframes>
     </Uniform>
     <Uniform>
@@ -32,6 +48,22 @@
       <Keyframes>
         <Keyframe>
           <Time>0</Time>
+          <Value>0</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>4</Time>
+          <Value>0</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>5.5</Time>
+          <Value>-0.4</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>6.6</Time>
+          <Value>-0.4</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>8</Time>
           <Value>0</Value>
         </Keyframe>
       </Keyframes>
@@ -52,6 +84,18 @@
           <Time>0</Time>
           <Value>0</Value>
         </Keyframe>
+        <Keyframe>
+          <Time>4</Time>
+          <Value>0</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>6.5</Time>
+          <Value>0.7</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>10</Time>
+          <Value>0</Value>
+        </Keyframe>
       </Keyframes>
     </Uniform>
     <Uniform>
@@ -62,8 +106,20 @@
           <Value>-5</Value>
         </Keyframe>
         <Keyframe>
+          <Time>4</Time>
+          <Value>5</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>6.7</Time>
+          <Value>7</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>8</Time>
+          <Value>7.1</Value>
+        </Keyframe>
+        <Keyframe>
           <Time>10</Time>
-          <Value>20</Value>
+          <Value>8</Value>
         </Keyframe>
       </Keyframes>
     </Uniform>
@@ -73,6 +129,36 @@
         <Keyframe>
           <Time>0</Time>
           <Value>0</Value>
+        </Keyframe>
+      </Keyframes>
+    </Uniform>
+    <Uniform>
+      <UniformName>amplitude</UniformName>
+      <Keyframes>
+        <Keyframe>
+          <Time>0</Time>
+          <Value>1.5</Value>
+        </Keyframe>
+      </Keyframes>
+    </Uniform>
+    <Uniform>
+      <UniformName>reflectionFactor</UniformName>
+      <Keyframes>
+        <Keyframe>
+          <Time>0</Time>
+          <Value>0</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>3</Time>
+          <Value>0</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>4</Time>
+          <Value>0.5</Value>
+        </Keyframe>
+        <Keyframe>
+          <Time>10</Time>
+          <Value>0.5</Value>
         </Keyframe>
       </Keyframes>
     </Uniform>
