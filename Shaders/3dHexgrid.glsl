@@ -1,5 +1,6 @@
 #version 330
 
+uniform float iGlobalTime;
 uniform vec2 iResolution;
 
 #include "../libs/camera.glsl"

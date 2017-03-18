@@ -1,9 +1,8 @@
-uniform float iGlobalTime;
 uniform float amplitude;
 
 //----------------------
 // Constants
-const float PI = 3.14159;
+const float Pi = 3.14159;
 const float SCALE = 1.0;
 const float MAX_DIST = 1000.0;
 const float X_REPEAT_DIST = 0.90*SCALE;
@@ -34,7 +33,7 @@ float CalculateHeight(vec3 p)
     
     //Variation
     float period = fract(iGlobalTime/30.)*3.0;
-    float theta = period*2.0*PI;
+    float theta = period*2.0*Pi;
     float overallAmplitude = amplitude; //Overall amplitude modulation
     float waveAmplitude = normalized_wave(sin(anchorPosXZ.x+anchorPosXZ.y+theta*4.0));
     float primHeight = overallAmplitude*waveAmplitude;
