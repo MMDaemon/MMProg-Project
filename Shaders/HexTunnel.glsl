@@ -2,9 +2,11 @@
 
 #include "../libs/camera.glsl"
 #include "../libs/operators.glsl"
+#include "HexagonDistField.glsl"
 
 uniform vec2 iResolution;
-uniform float iGlobalTime;
+uniform float spherePos;
+uniform float zoom;
 
 const float epsilon = 0.0001;
 const int maxSteps = 512;
@@ -51,7 +53,9 @@ float distField(vec3 point)
 	float height = .42;
     float depth = .75;
     float t = 0.02;
-    point.z = mod(point.z,depth*2.)-0.5*depth*2.;
+	if(point.z<=90){
+		point.z = mod(point.z,depth*2.)-0.5*depth*2.;
+	}
 
    	float cyl = sdHexPrism( point, vec2(height-t, depth+t));
    	float scyl = sdHexPrism( point, vec2(height-t*2.0, depth+t+.001));
@@ -95,7 +99,7 @@ Intersection rayCastScene(vec3 origin, vec3 dir)
 	float t = bigNumber;
 	vec3 M = vec3(-bigNumber);
 	vec3 normal = vec3(0.0, 0.0, 0.0);
-	vec3 newM = vec3(0, 0, 1+sin(iGlobalTime));
+	vec3 newM = vec3(0, 0, spherePos);
 	float newT = sphere(newM, 0.1, origin, dir);
 	if (0.0 < newT && newT < t)
 	{	
@@ -142,26 +146,38 @@ void main()
 	vec3 camP = calcCameraPos();
 
 	vec3 camDir = calcCameraRayDir(80.0, gl_FragCoord.xy, iResolution);
+	
+	vec2 pos = gl_FragCoord.xy/iResolution.xy;
+	float aspect = iResolution.y/iResolution.x; 
+	pos = (2.0*pos-vec2(1.0, 1.0)) * vec2(1.0, aspect);
 
 	float maxT = 100;
 	//start point is the camera position
 	float sphereTraceDist = sphereTracing(camP, camDir, 0, maxT, maxSteps);
 	
-	vec3 color = vec3(0);
+	// Hexgrid	
+	VoronoiResult voronoiResult = voronoi( 8.0/(1+15*zoom*zoom*zoom*zoom)*pos );
+	vec3 color = mix(vec3(0.0,1.0,0.0), vec3(0.0), smoothstep( 0.00, 0.04, voronoiResult.borderDist ) );
 	
+	vec3 tunnelColor = vec3(0.0);
 	if(0 < sphereTraceDist)
 	{
 		vec3 point = camP + sphereTraceDist * camDir;
 		vec3 normal = getNormal(point, 0.01);
-		
-		color = vec3(0,1-calcAO(point, normal),0);
-		color = mix(color, vec3(0),sphereTraceDist/30);
+	
+		tunnelColor = vec3(0,1-calcAO(point, normal),0);
+		tunnelColor = mix(tunnelColor, vec3(0),sphereTraceDist/30);
 	}
+	
+	// center Hexagon
+	float centerHexDist = hexagonDistance( 16.0/(1+15*zoom*zoom*zoom*zoom)*pos );
+	float centerHexBorder = smoothstep( 0.99, 1.03, centerHexDist );
+	vec3 innerColor= mix(tunnelColor, color, centerHexBorder );
 	
 	Intersection rayTraceIntersection = rayCastScene(camP, camDir);
 	
 	if(rayTraceIntersection.exists && (distance(camP, rayTraceIntersection.intersectP)<sphereTraceDist || 0 >= sphereTraceDist)){
-		color = ambientDiffuse(vec3(1.0), rayTraceIntersection.normal);
+		innerColor = ambientDiffuse(vec3(1.0), rayTraceIntersection.normal);
 		
 		// calculate reflection
 		vec3 reflectOrigin = rayTraceIntersection.intersectP;
@@ -175,8 +191,12 @@ void main()
 
 			reflectionColor = vec3(0, 1-calcAO(point, normal),0);
 		}
-		color=mix(color, reflectionColor, 0.2);
+		innerColor=mix(innerColor, reflectionColor, 0.2);
 	}
+	
+	color = mix(color,innerColor,max(0,(min(1,1+camP.z))));
 	
 	gl_FragColor = vec4(color, 1);
 }
+
+
