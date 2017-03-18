@@ -119,7 +119,7 @@ vec3 ambientDiffuse(vec3 material, vec3 normal)
 {
 	vec3 ambient = vec3(0);
 
-	vec3 lightDir = normalize(vec3(1, -1, 1));
+	vec3 lightDir = normalize(vec3(-0.3, -0.2, 1));
 	vec3 toLight = -lightDir;
 	float diffuse = max(0, dot(toLight, normal));
 	
@@ -191,12 +191,11 @@ void main()
 
 			reflectionColor = vec3(0, 1-calcAO(point, normal),0);
 		}
-		innerColor=mix(innerColor, reflectionColor, 0.2);
+		innerColor=mix(innerColor, reflectionColor, 0.3);
 	}
 	
 	color = mix(color,innerColor,max(0,(min(1,1+camP.z))));
 	
 	gl_FragColor = vec4(color, 1);
 }
-
 
