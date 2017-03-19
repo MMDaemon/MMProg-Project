@@ -7,41 +7,6 @@ uniform vec2 iResolution;
 uniform float iGlobalTime;
 uniform float iStartTime;
 
-const float maxSpheres = 20;
-
-//fractal Brownian motion
-float fBm(vec2 p,float time, float offset=0)
-{
-	// Properties
-	int octaves = 10;//int(iMouse.x * 0.01);
-	float lacunarity = .0;
-	float gain = .0;
-	// Initial values
-	float amplitude = .01;
-	float frequency = 10*smoothstep(.0,PI,time);
-	float value = 0;
-	// Loop of octaves
-	for (int i = 0; i < octaves; ++i)
-	{
-		value += amplitude * noise(frequency*noise( ceil(noise(abs(p.x*time)))*frequency*time) * p.x );
-		frequency += lacunarity;
-		amplitude *= gain;
-	}
-	
-	
-	return frequency*(sin(value))-offset*0.05;
-}
-
-//draw function line		
-float plotFunction(vec2 coord, float width, float time,float offset=1)
-{
-	float dist = abs(fBm(coord,time,offset) - coord.y);
-	//dist+= abs(fBm(coord.y,time, offset) - coord.y);
-	//dist += +(0.02*((coord.x*time*time)/**((coord.y*time*time))*/));
-	return 1 - smoothstep(0, width, dist);
-}
-
-
 const float bigNumber = 10000.0;
 const float eps = 0.001;
 
@@ -361,7 +326,7 @@ void main()
 {
 	vec3 color = vec3(0);
 	
-	color = s01_Point(iGlobalTime/*-120.0*/);
+	color = s01_Point(iGlobalTime-120.1);
 
 	gl_FragColor = vec4(color, 1.0);
 }

@@ -7,6 +7,7 @@
 uniform vec2 iResolution;
 uniform float spherePos;
 uniform float zoom;
+uniform float dimensionality;
 
 const float epsilon = 0.0001;
 const int maxSteps = 512;
@@ -177,7 +178,7 @@ void main()
 	Intersection rayTraceIntersection = rayCastScene(camP, camDir);
 	
 	if(rayTraceIntersection.exists && (distance(camP, rayTraceIntersection.intersectP)<sphereTraceDist || 0 >= sphereTraceDist)){
-		innerColor = ambientDiffuse(vec3(1.0), rayTraceIntersection.normal);
+		vec3 sphereColor = ambientDiffuse(vec3(1.0), rayTraceIntersection.normal);
 		
 		// calculate reflection
 		vec3 reflectOrigin = rayTraceIntersection.intersectP;
@@ -191,11 +192,11 @@ void main()
 
 			reflectionColor = vec3(0, 1-calcAO(point, normal),0);
 		}
-		innerColor=mix(innerColor, reflectionColor, 0.3);
+		sphereColor=mix(sphereColor, reflectionColor, 0.3);
+		innerColor = mix(vec3(1.0), sphereColor, dimensionality);
 	}
 	
 	color = mix(color,innerColor,max(0,(min(1,1+camP.z))));
 	
 	gl_FragColor = vec4(color, 1);
 }
-
